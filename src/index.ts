@@ -1,12 +1,12 @@
-import { IAxiosRequestConfig } from './types'
+import { IAxiosRequestConfig, IAxiosPromise } from './types'
 import { buildURL } from './helpers/url'
 import { transformRequest } from './helpers/data'
 import { processHeaders } from './helpers/headers'
 import xhr from './xhr'
 
-function axios(config: IAxiosRequestConfig) {
+function axios(config: IAxiosRequestConfig): IAxiosPromise {
   processConfig(config)
-  xhr(config)
+  return xhr(config)
 }
 
 function processConfig(config: IAxiosRequestConfig): void {
