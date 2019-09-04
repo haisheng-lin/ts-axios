@@ -1,37 +1,16 @@
-import { IAxiosRequestConfig, IAxiosPromise, IAxiosResponse } from './types'
-import { buildURL } from './helpers/url'
-import { transformRequest, transformResponse } from './helpers/data'
-import { processHeaders } from './helpers/headers'
-import xhr from './xhr'
+import { IAxiosInstance } from './types'
+import Axios from './core/Axios'
+import { extend } from './helpers/util'
 
-function axios(config: IAxiosRequestConfig): IAxiosPromise {
-  processConfig(config)
-  return xhr(config).then(transformResponseData)
+function createInstance(): IAxiosInstance {
+  const context = new Axios()
+  // 如果不 bind，那么执行 request 时的 this 就会指向调用 createInstance 时的作用域
+  const instance = Axios.prototype.request.bind(context)
+  extend(instance, context)
+
+  return instance as IAxiosInstance
 }
 
-function processConfig(config: IAxiosRequestConfig): void {
-  config.url = transformURL(config)
-  config.headers = transformHeaders(config)
-  config.data = transformRequestData(config)
-}
-
-function transformURL(config: IAxiosRequestConfig): string {
-  const { url, params } = config
-  return buildURL(url, params)
-}
-
-function transformRequestData(config: IAxiosRequestConfig): any {
-  return transformRequest(config.data)
-}
-
-function transformHeaders(config: IAxiosRequestConfig): any {
-  const { headers = {}, data } = config
-  return processHeaders(headers, data)
-}
-
-function transformResponseData(response: IAxiosResponse): IAxiosResponse {
-  response.data = transformResponse(response.data)
-  return response
-}
+const axios = createInstance()
 
 export default axios
