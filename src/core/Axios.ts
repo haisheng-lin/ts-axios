@@ -2,7 +2,18 @@ import { IAxiosRequestConfig, IAxiosPromise, Method } from '../types'
 import dispatchRequest from './dispatchRequest'
 
 export default class {
-  public request(config: IAxiosRequestConfig): IAxiosPromise {
+  public request(url: any, config?: any): IAxiosPromise {
+    // 这里兼容两种调用 api 的方式
+    // 1. axios('/api/post', { method: 'post', data })
+    // 2. axios({ method: 'post', data, url: '/api/post' })
+    if (typeof url === 'string') {
+      if (!config) {
+        config = {}
+      }
+      config.url = url
+    } else {
+      config = url
+    }
     return dispatchRequest(config)
   }
 

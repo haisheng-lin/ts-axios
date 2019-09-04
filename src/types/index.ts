@@ -64,4 +64,5 @@ export interface IAxios {
 // 混合对象，既可以 new 一个实例出来，也可以调用父类的方法
 export interface IAxiosInstance extends IAxios {
   (config: IAxiosRequestConfig): IAxiosPromise
+  (url: string, config?: IAxiosRequestConfig): IAxiosPromise
 }
