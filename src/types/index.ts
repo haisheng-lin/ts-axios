@@ -44,6 +44,11 @@ export interface IAxiosError extends Error {
 }
 
 export interface IAxios {
+  interceptors: {
+    request: IAxiosInterceptorManager<IAxiosRequestConfig>
+    response: IAxiosInterceptorManager<IAxiosResponse>
+  }
+
   request<T = any>(config: IAxiosRequestConfig): IAxiosPromise<T>
 
   get<T = any>(url: string, config?: IAxiosRequestConfig): IAxiosPromise<T>
@@ -68,7 +73,7 @@ export interface IAxiosInstance extends IAxios {
 }
 
 export interface IAxiosInterceptorManager<T> {
-  use(resolved: IResolvedFn<T>, rejected: IRejectedFn): number
+  use(resolved: IResolvedFn<T>, rejected?: IRejectedFn): number
   eject(id: number): void
 }
 

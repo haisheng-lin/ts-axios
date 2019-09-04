@@ -1,7 +1,34 @@
-import { IAxiosRequestConfig, IAxiosPromise, Method } from '../types'
+import {
+  IAxiosRequestConfig,
+  IAxiosPromise,
+  Method,
+  IAxiosResponse,
+  IResolvedFn,
+  IRejectedFn
+} from '../types'
 import dispatchRequest from './dispatchRequest'
+import InterceptorManager from './InterceptorManager'
+
+interface IInterceptors {
+  request: InterceptorManager<IAxiosRequestConfig>
+  response: InterceptorManager<IAxiosResponse>
+}
+
+interface IPromiseChain<T> {
+  resolved: IResolvedFn<T> | ((config: IAxiosRequestConfig) => IAxiosPromise)
+  rejected?: IRejectedFn
+}
 
 export default class {
+  private interceptors: IInterceptors
+
+  constructor() {
+    this.interceptors = {
+      request: new InterceptorManager<IAxiosRequestConfig>(),
+      response: new InterceptorManager<IAxiosResponse>()
+    }
+  }
+
   public request(url: any, config?: any): IAxiosPromise {
     // 这里兼容两种调用 api 的方式
     // 1. axios('/api/post', { method: 'post', data })
@@ -14,7 +41,32 @@ export default class {
     } else {
       config = url
     }
-    return dispatchRequest(config)
+
+    const chain: IPromiseChain<any>[] = [
+      {
+        resolved: dispatchRequest,
+        rejected: undefined
+      }
+    ]
+
+    this.interceptors.request.forEach(interceptor => {
+      // request 拦截器是先添加后执行
+      chain.unshift(interceptor)
+    })
+
+    this.interceptors.response.forEach(interceptor => {
+      // response 拦截器是先添加先执行
+      chain.push(interceptor)
+    })
+
+    let promise = Promise.resolve(config)
+
+    while (chain.length) {
+      const { resolved, rejected } = chain.shift()!
+      promise = promise.then(resolved, rejected)
+    }
+
+    return promise
   }
 
   public get(url: string, config?: IAxiosRequestConfig): IAxiosPromise {
