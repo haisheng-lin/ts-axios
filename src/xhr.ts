@@ -3,11 +3,14 @@ import { parseHeaders } from './helpers/headers'
 
 export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
   return new Promise((resolve, reject) => {
-    const { url, method = 'GET', data = null, headers, responseType } = config
+    const { url, method = 'GET', data = null, headers, responseType, timeout } = config
     const request = new XMLHttpRequest()
 
     if (responseType) {
       request.responseType = responseType
+    }
+    if (timeout) {
+      request.timeout = timeout
     }
 
     request.open(method.toUpperCase(), url, true)
@@ -16,6 +19,11 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
       if (request.readyState !== 4) {
         return
       }
+      if (request.status === 0) {
+        // 发生网络错误或超时错误时
+        return
+      }
+
       const responseHeaders = parseHeaders(request.getAllResponseHeaders())
       const responseData = responseType !== 'text' ? request.response : request.responseText
       const response: IAxiosResponse = {
@@ -26,7 +34,17 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
         config,
         request: request
       }
-      resolve(response)
+      handleResponse(response)
+    }
+
+    request.onerror = function handleError() {
+      // 处理网络错误
+      reject(new Error('Network Error'))
+    }
+
+    request.ontimeout = function handleTimeout() {
+      // 处理超时错误
+      reject(new Error(`Timeout of ${timeout} ms exceeded`))
     }
 
     Object.keys(headers).forEach(keyName => {
@@ -39,5 +57,14 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
     })
 
     request.send(data)
+
+    function handleResponse(response: IAxiosResponse): void {
+      // 处理状态码错误
+      if (response.status >= 200 && response.status < 300) {
+        resolve(response)
+      } else {
+        reject(new Error(`Request failed wit status code ${response.status}`))
+      }
+    }
   })
 }
