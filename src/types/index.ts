@@ -22,6 +22,8 @@ export interface IAxiosRequestConfig {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+
+  [p: string]: any
 }
 
 export interface IAxiosResponse<T = any> {
@@ -44,6 +46,8 @@ export interface IAxiosError extends Error {
 }
 
 export interface IAxios {
+  defaults: IAxiosRequestConfig
+
   interceptors: {
     request: IAxiosInterceptorManager<IAxiosRequestConfig>
     response: IAxiosInterceptorManager<IAxiosResponse>
