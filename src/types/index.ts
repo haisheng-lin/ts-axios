@@ -22,6 +22,8 @@ export interface IAxiosRequestConfig {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+  transformRequest?: IAxiosTransformer | IAxiosTransformer[]
+  transformResponse?: IAxiosTransformer | IAxiosTransformer[]
 
   [p: string]: any
 }
@@ -87,4 +89,8 @@ export interface IResolvedFn<T> {
 
 export interface IRejectedFn {
   (error: any): any
+}
+
+export interface IAxiosTransformer {
+  (data: any, headers?: any): any
 }

@@ -1,4 +1,6 @@
 import { IAxiosRequestConfig, Method } from './types'
+import { processHeaders } from './helpers/headers'
+import { transformRequest, transformResponse } from './helpers/data'
 
 const defaults: IAxiosRequestConfig = {
   method: 'get',
@@ -7,7 +9,14 @@ const defaults: IAxiosRequestConfig = {
     common: {
       Accept: 'application/json, text/plain, */*'
     }
-  }
+  },
+  transformRequest: [
+    (data: any, headers?: any) => {
+      processHeaders(headers, data)
+      return transformRequest(data)
+    }
+  ],
+  transformResponse: [(data: any) => transformResponse(data)]
 }
 
 const methodsNoData: Method[] = ['delete', 'get', 'options']
