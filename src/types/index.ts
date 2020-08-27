@@ -24,6 +24,7 @@ export interface IAxiosRequestConfig {
   timeout?: number
   transformRequest?: IAxiosTransformer | IAxiosTransformer[]
   transformResponse?: IAxiosTransformer | IAxiosTransformer[]
+  cancelToken?: CancelToken
 
   [p: string]: any
 }
@@ -78,6 +79,13 @@ export interface IAxiosInstance extends IAxios {
   <T = any>(url: string, config?: IAxiosRequestConfig): IAxiosPromise<T>
 }
 
+export interface AxiosStatic extends IAxiosInstance {
+  create(config?: IAxiosRequestConfig): IAxiosInstance
+  CancelToken: CancelTokenStatic
+  Cancel: CancelStatic
+  isCancel: (value: any) => boolean
+}
+
 export interface IAxiosInterceptorManager<T> {
   use(resolved: IResolvedFn<T>, rejected?: IRejectedFn): number
   eject(id: number): void
@@ -93,4 +101,38 @@ export interface IRejectedFn {
 
 export interface IAxiosTransformer {
   (data: any, headers?: any): any
+}
+
+export interface CancelToken {
+  promise: Promise<Cancel>
+  reason?: Cancel
+
+  throwIfRequested(): void
+}
+
+export interface Canceler {
+  (message?: string): void
+}
+
+export interface CancelExecutor {
+  (cancel: Canceler): void
+}
+
+export interface CancelTokenSource {
+  token: CancelToken
+  cancel: Canceler
+}
+
+export interface CancelTokenStatic {
+  new (executor: CancelExecutor): CancelToken
+
+  source(): CancelTokenSource
+}
+
+export interface Cancel {
+  message?: string
+}
+
+export interface CancelStatic {
+  new (message?: string): Cancel
 }

@@ -5,6 +5,7 @@ import xhr from './xhr'
 import transform from './transform'
 
 export default function dispatchRequest(config: IAxiosRequestConfig): IAxiosPromise {
+  throwIfCancellationRequested(config)
   processConfig(config)
   return xhr(config).then(transformResponseData)
 }
@@ -23,4 +24,10 @@ function transformURL(config: IAxiosRequestConfig): string {
 function transformResponseData(response: IAxiosResponse): IAxiosResponse {
   response.data = transform(response.data, response.headers, response.config.transformResponse)
   return response
+}
+
+function throwIfCancellationRequested(config: IAxiosRequestConfig) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested()
+  }
 }
