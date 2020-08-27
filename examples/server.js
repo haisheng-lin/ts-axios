@@ -98,6 +98,18 @@ router.post('/config/post', (req, res) => {
   res.json(req.body)
 })
 
+router.post('/cancel/post', (req, res) => {
+  setTimeout(() => {
+    res.json('hello')
+  }, 1000)
+})
+
+router.get('/cancel/get', (req, res) => {
+  setTimeout(() => {
+    res.json('hello')
+  }, 1000)
+})
+
 app.use(
   webpackDevMiddleware(compiler, {
     publicPath: '/__build__/',
