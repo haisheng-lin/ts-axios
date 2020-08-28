@@ -4,7 +4,16 @@ import { createError } from '../helpers/error'
 
 export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
   return new Promise((resolve, reject) => {
-    const { url, method = 'GET', data = null, headers, responseType, timeout, cancelToken } = config
+    const {
+      url,
+      method = 'GET',
+      data = null,
+      headers,
+      responseType,
+      timeout,
+      cancelToken,
+      withCredentials,
+    } = config
     const request = new XMLHttpRequest()
 
     if (responseType) {
@@ -12,6 +21,9 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
     }
     if (timeout) {
       request.timeout = timeout
+    }
+    if (withCredentials) {
+      request.withCredentials = withCredentials
     }
 
     request.open(method.toUpperCase(), url!, true)
@@ -33,7 +45,7 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
         statusText: request.statusText,
         headers: responseHeaders,
         config,
-        request: request
+        request: request,
       }
       handleResponse(response)
     }
@@ -48,7 +60,7 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
       reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
     }
 
-    Object.keys(headers).forEach(keyName => {
+    Object.keys(headers).forEach((keyName) => {
       // 如果 data 是 null，那么设置 content-type 是没意义的，这情况下可以删掉
       if (data === null && keyName.toLowerCase() === 'content-type') {
         delete headers[keyName]
@@ -58,7 +70,7 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
     })
 
     if (cancelToken) {
-      cancelToken.promise.then(reason => {
+      cancelToken.promise.then((reason) => {
         request.abort()
         reject(reason)
       })

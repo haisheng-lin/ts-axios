@@ -26,6 +26,8 @@ export interface IAxiosRequestConfig {
   transformResponse?: IAxiosTransformer | IAxiosTransformer[]
   cancelToken?: CancelToken
 
+  withCredentials?: boolean
+
   [p: string]: any
 }
 
