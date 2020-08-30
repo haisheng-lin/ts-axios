@@ -27,6 +27,8 @@ export interface IAxiosRequestConfig {
   cancelToken?: CancelToken
 
   withCredentials?: boolean
+  xsrfCookieName?: string
+  xsrfHeaderName?: string
 
   [p: string]: any
 }

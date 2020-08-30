@@ -1,6 +1,8 @@
 import { IAxiosRequestConfig, IAxiosPromise, IAxiosResponse } from '../types'
 import { parseHeaders } from '../helpers/headers'
 import { createError } from '../helpers/error'
+import { isURLSameOrigin } from '../helpers/url'
+import cookie from '../helpers/cookie'
 
 export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
   return new Promise((resolve, reject) => {
@@ -13,6 +15,8 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
       timeout,
       cancelToken,
       withCredentials,
+      xsrfCookieName,
+      xsrfHeaderName,
     } = config
     const request = new XMLHttpRequest()
 
@@ -58,6 +62,13 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
     request.ontimeout = function handleTimeout() {
       // 处理超时错误
       reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
+    }
+
+    if ((withCredentials || isURLSameOrigin(url!)) && xsrfCookieName) {
+      const xsrfValue = cookie.read(xsrfCookieName)
+      if (xsrfValue && xsrfHeaderName) {
+        headers[xsrfHeaderName] = xsrfValue
+      }
     }
 
     Object.keys(headers).forEach((keyName) => {
