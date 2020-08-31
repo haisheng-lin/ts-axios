@@ -110,6 +110,12 @@ router.get('/cancel/get', (req, res) => {
   }, 1000)
 })
 
+router.get('/more/get', (req, res) => {
+  setTimeout(() => {
+    res.json({ more: 'a', get: 'b' })
+  }, 1000)
+})
+
 app.use(
   webpackDevMiddleware(compiler, {
     publicPath: '/__build__/',
@@ -122,7 +128,13 @@ app.use(
 
 app.use(webpackHotMiddleware(compiler))
 
-app.use(express.static(__dirname))
+app.use(
+  express.static(__dirname, {
+    setHeaders(res) {
+      res.cookie('XSRF-TOKEN-D', '12345')
+    }
+  })
+)
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
