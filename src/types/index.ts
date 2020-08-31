@@ -30,6 +30,9 @@ export interface IAxiosRequestConfig {
   xsrfCookieName?: string
   xsrfHeaderName?: string
 
+  onDownloadProgress?: (e: ProgressEvent) => void
+  onUploadProgress?: (e: ProgressEvent) => void
+
   [p: string]: any
 }
 

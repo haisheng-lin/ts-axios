@@ -1,10 +1,10 @@
 const toString = Object.prototype.toString
 
-export function isDate(val: any): val is Date {
+export function isDate(val: unknown): val is Date {
   return toString.call(val) === '[object Date]'
 }
 
-export function isPlainObject(val: any): val is Object {
+export function isPlainObject(val: unknown): val is Object {
   return toString.call(val) === '[object Object]'
 }
 
@@ -15,6 +15,10 @@ export function extend<T, U>(to: T, from: U): T & U {
   }
 
   return to as T & U
+}
+
+export function isFormData(val: unknown): val is FormData {
+  return typeof val !== 'undefined' && val instanceof FormData
 }
 
 export function deepMerge(...objs: any[]): any {
