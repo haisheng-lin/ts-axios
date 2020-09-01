@@ -21,6 +21,10 @@ export function isFormData(val: unknown): val is FormData {
   return typeof val !== 'undefined' && val instanceof FormData
 }
 
+export function isURLSearchParams(val: unknown): val is URLSearchParams {
+  return typeof val !== 'undefined' && val instanceof URLSearchParams
+}
+
 export function deepMerge(...objs: any[]): any {
   const result = Object.create(null)
   objs.forEach(obj => {

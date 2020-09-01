@@ -35,6 +35,7 @@ export interface IAxiosRequestConfig {
 
   auth?: string // 格式是：`Basic ${xxx}`
   validateStatus?: (status: number) => boolean
+  paramsSerializer?: (params: any) => string
 
   [p: string]: any
 }
