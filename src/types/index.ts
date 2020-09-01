@@ -34,6 +34,7 @@ export interface IAxiosRequestConfig {
   onUploadProgress?: (e: ProgressEvent) => void
 
   auth?: string // 格式是：`Basic ${xxx}`
+  validateStatus?: (status: number) => boolean
 
   [p: string]: any
 }

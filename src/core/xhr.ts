@@ -20,7 +20,8 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
       xsrfHeaderName,
       onDownloadProgress,
       onUploadProgress,
-      auth
+      auth,
+      validateStatus
     } = config
 
     const request = new XMLHttpRequest()
@@ -127,7 +128,7 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
 
     function handleResponse(response: IAxiosResponse): void {
       // 处理状态码错误
-      if (response.status >= 200 && response.status < 300) {
+      if (!validateStatus || validateStatus(response.status)) {
         resolve(response)
       } else {
         reject(

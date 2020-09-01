@@ -7,8 +7,8 @@ const defaults: IAxiosRequestConfig = {
   timeout: 0,
   headers: {
     common: {
-      Accept: 'application/json, text/plain, */*',
-    },
+      Accept: 'application/json, text/plain, */*'
+    }
   },
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
@@ -16,22 +16,25 @@ const defaults: IAxiosRequestConfig = {
     (data: any, headers?: any) => {
       processHeaders(headers, data)
       return transformRequest(data)
-    },
+    }
   ],
   transformResponse: [(data: any) => transformResponse(data)],
+  validateStatus: status => {
+    return 200 <= status && status < 300
+  }
 }
 
 const methodsNoData: Method[] = ['delete', 'get', 'options']
 
-methodsNoData.forEach((method) => {
+methodsNoData.forEach(method => {
   defaults.headers[method] = {}
 })
 
 const methodsWithData: Method[] = ['post', 'patch', 'put']
 
-methodsWithData.forEach((method) => {
+methodsWithData.forEach(method => {
   defaults.headers[method] = {
-    'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Type': 'application/x-www-form-urlencoded'
   }
 })
 
