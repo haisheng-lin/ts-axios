@@ -19,7 +19,8 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
       xsrfCookieName,
       xsrfHeaderName,
       onDownloadProgress,
-      onUploadProgress
+      onUploadProgress,
+      auth
     } = config
 
     const request = new XMLHttpRequest()
@@ -99,6 +100,10 @@ export default function xhr(config: IAxiosRequestConfig): IAxiosPromise {
         if (xsrfValue && xsrfHeaderName) {
           headers[xsrfHeaderName] = xsrfValue
         }
+      }
+
+      if (auth) {
+        headers['Authorization'] = auth
       }
 
       Object.keys(headers).forEach(keyName => {

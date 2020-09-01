@@ -33,6 +33,8 @@ export interface IAxiosRequestConfig {
   onDownloadProgress?: (e: ProgressEvent) => void
   onUploadProgress?: (e: ProgressEvent) => void
 
+  auth?: string // 格式是：`Basic ${xxx}`
+
   [p: string]: any
 }
 
