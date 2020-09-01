@@ -86,13 +86,10 @@ export interface IAxios {
 }
 
 // 混合对象，既可以 new 一个实例出来，也可以调用父类的方法
-export interface IAxiosInstance extends IAxios {
+export interface IAxiosStatic extends IAxios {
   <T = any>(config: IAxiosRequestConfig): IAxiosPromise<T>
   <T = any>(url: string, config?: IAxiosRequestConfig): IAxiosPromise<T>
-}
-
-export interface AxiosStatic extends IAxiosInstance {
-  create(config?: IAxiosRequestConfig): IAxiosInstance
+  create(config?: IAxiosRequestConfig): IAxiosStatic
   CancelToken: CancelTokenStatic
   Cancel: CancelStatic
   isCancel: (value: any) => boolean
