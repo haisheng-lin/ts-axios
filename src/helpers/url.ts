@@ -73,6 +73,15 @@ export function buildURL(
   return url
 }
 
+export function isAbsoluteURL(url: string) {
+  // 不太明白为啥这么判断绝对路径
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
+}
+
+export function combineURL(baseURL: string, relativeURL?: string) {
+  return relativeURL ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '') : baseURL
+}
+
 const urlParsingNode = document.createElement('a')
 const currentOrigin = resolveURL(window.location.href)
 

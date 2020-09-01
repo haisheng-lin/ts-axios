@@ -1,5 +1,5 @@
 import { IAxiosRequestConfig, IAxiosPromise, IAxiosResponse } from '../types'
-import { buildURL } from '../helpers/url'
+import { buildURL, isAbsoluteURL, combineURL } from '../helpers/url'
 import { flattenHeaders } from '../helpers/headers'
 import xhr from './xhr'
 import transform from './transform'
@@ -17,7 +17,12 @@ function processConfig(config: IAxiosRequestConfig): void {
 }
 
 function transformURL(config: IAxiosRequestConfig): string {
-  const { url, params, paramsSerializer } = config
+  const { params, paramsSerializer, baseURL } = config
+  let url = config.url
+  if (baseURL && !isAbsoluteURL(url!)) {
+    url = combineURL(baseURL, url)
+  }
+
   return buildURL(url!, params, paramsSerializer)
 }
 

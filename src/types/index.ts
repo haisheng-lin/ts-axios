@@ -25,6 +25,7 @@ export interface IAxiosRequestConfig {
   transformRequest?: IAxiosTransformer | IAxiosTransformer[]
   transformResponse?: IAxiosTransformer | IAxiosTransformer[]
   cancelToken?: CancelToken
+  baseURL?: string
 
   withCredentials?: boolean
   xsrfCookieName?: string
