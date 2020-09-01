@@ -6,3 +6,11 @@ const instance = axios.create({
 })
 
 instance.get('/more/get').then(res => console.log(res))
+
+instance.get('/more/304').then(res => console.log(res))
+
+instance
+  .get('/more/304', {
+    validateStatus: status => 200 <= status && status < 400
+  })
+  .then(res => console.log(res))

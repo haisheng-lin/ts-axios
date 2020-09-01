@@ -116,6 +116,10 @@ router.get('/more/get', (req, res) => {
   }, 1000)
 })
 
+router.get('/more/304', (req, res) => {
+  res.status(304).send('Not Modified by Zoro')
+})
+
 app.use(
   webpackDevMiddleware(compiler, {
     publicPath: '/__build__/',
